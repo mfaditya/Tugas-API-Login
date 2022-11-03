@@ -1,6 +1,6 @@
 ﻿namespace API.ViewModel
 {
-    public class ResponseLogin
+    public class LoginVM
     {
         public int Id { get; set; }
         public string FullName { get; set; }

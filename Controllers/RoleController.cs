@@ -1,5 +1,6 @@
 ﻿using API.Models;
 using API.Repository.Data;
+using API.Repository.Interface;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,13 +8,12 @@ namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class DivisionController : ControllerBase
+    public class RoleController : ControllerBase
     {
-        private DivisionRepository _repository;
-
-        public DivisionController(DivisionRepository divisionRepository)
+        private RoleRepository _roleRepository;
+        public RoleController(RoleRepository roleRepository)
         {
-            _repository = divisionRepository;
+            _roleRepository = roleRepository;
         }
 
         [HttpGet]
@@ -21,7 +21,7 @@ namespace API.Controllers
         {
             try
             {
-                var data = _repository.Get();
+                var data = _roleRepository.Get();
                 if (data == null)
                 {
                     return Ok(new
@@ -55,7 +55,7 @@ namespace API.Controllers
         {
             try
             {
-                var data = _repository.GetById(id);
+                var data = _roleRepository.GetById(id);
                 if (data == null)
                 {
                     return Ok(new
@@ -85,11 +85,11 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public ActionResult Create(Division division)
+        public ActionResult Create(Role entity)
         {
             try
             {
-                var result = _repository.Create(division);
+                var result = _roleRepository.Create(entity);
                 if (result == 0)
                 {
                     return Ok(new
@@ -119,11 +119,11 @@ namespace API.Controllers
         }
 
         [HttpPut]
-        public ActionResult Update(Division division)
+        public ActionResult Update(Role entity)
         {
             try
             {
-                var result = _repository.Update(division);
+                var result = _roleRepository.Update(entity);
                 if (result == 0)
                 {
                     return Ok(new
@@ -157,7 +157,7 @@ namespace API.Controllers
         {
             try
             {
-                var result = _repository.Delete(id);
+                var result = _roleRepository.Delete(id);
                 if (result == 0)
                 {
                     return Ok(new

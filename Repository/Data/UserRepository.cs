@@ -1,28 +1,30 @@
 ﻿using API.Context;
 using API.Models;
 using API.Repository.Interface;
+using API.ViewModel;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace API.Repository.Data
 {
-    public class RoleRepository : IRepository<Role, int>
+    public class UserRepository : IRepository<User, Key>
     {
         private MyContext _context;
-        public RoleRepository(MyContext context)
+        public UserRepository(MyContext context)
         {
             _context = context;
         }
-
-        public int Create(Role entity)
+        public int Create(User entity)
         {
-            _context.Roles.Add(entity);
+            _context.Users.Add(entity);
             var result = _context.SaveChanges();
             return result;
         }
 
-        public int Delete(int id)
+        public int Delete(Key id)
         {
-            var check = _context.Roles.Find(id);
+            var check = _context.Users.Find(id);
             if (check != null)
             {
                 _context.Remove(check);
@@ -32,17 +34,17 @@ namespace API.Repository.Data
             return 0;
         }
 
-        public IEnumerable<Role> Get()
+        public IEnumerable<User> Get()
         {
-            return _context.Roles.ToList();
+            return _context.Users.ToList();
         }
 
-        public Role GetById(int id)
+        public User GetById(Key id)
         {
-            return _context.Roles.Find(id);
+            return _context.Users.Find(id);
         }
 
-        public int Update(Role entity)
+        public int Update(User entity)
         {
             _context.Entry(entity).State = EntityState.Modified;
             var result = _context.SaveChanges();

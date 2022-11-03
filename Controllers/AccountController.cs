@@ -1,6 +1,8 @@
-﻿using API.Context;
+﻿using System.Security.Claims;
+using API.Context;
 using API.Handlers;
 using API.Models;
+using API.Repository.Data;
 using API.ViewModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -12,81 +14,149 @@ namespace API.Controllers
     [ApiController]
     public class AccountController : ControllerBase
     {
-        MyContext myContext;
-
-        public AccountController(MyContext context)
+        private AccountRepository _repositoryController;
+        public AccountController(AccountRepository repositoryRepository)
         {
-            this.myContext = context;
+            _repositoryController = repositoryRepository;
         }
 
         [HttpPost]
         [Route("Login")]
         public ActionResult Login(string email, string password)
         {
-            var result = myContext.Users
-                .Include(x => x.Employee)
-                .Include(x => x.Role)
-                .SingleOrDefault(x => x.Employee.Email.Equals(email));
-            var validatePass = Hashing.ValidatePassword(password, result.Password);
-
-            if (result != null && validatePass)
+            try
             {
-                return Ok(new
+                var data = _repositoryController.Login(email, password);
+                
+                if (data != null)
                 {
-                    StatusCode = 200,
-                    Message = "Kamu Berhasil Login"
-                });
+                    return Ok(new
+                    {
+                        StatusCode = 200,
+                        Message = "Kamu Berhasil Login",
+                        Data = new
+                        {
+                            Id = Convert.ToInt32(data[0]),
+                            Email = (data[1]),
+                            FullName = (data[2]),
+                            Role = (data[3])
+                        }
+                    });
+                }
+                else
+                {
+                    return Ok(new
+                    {
+                        StatusCode = 400,
+                        Message = "Email atau Password Anda Salah!"
+                    });
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return Ok(new
+                return BadRequest(new
                 {
                     StatusCode = 400,
-                    Message = "Email atau Password Anda Salah!",
-                    Data = result
+                    Message = ex.Message,
                 });
             }
         }
 
         [HttpPost]
+        [Route("Register")]
         public ActionResult Register(string fullName, string email, DateTime birthDate, string password)
         {
-            Employee employee = new Employee()
+            try
             {
-                FullName = fullName,
-                Email = email,
-                BirthDate = birthDate
-            };
-            myContext.Employees.Add(employee);
-            var data = myContext.Employees.SingleOrDefault(x => x.Email.Equals(email));
-            if (data == null)
-            {
-                var result = myContext.SaveChanges();
-                if (result > 0)
+                var resultUser = _repositoryController.Register(fullName, email, birthDate, password);
+                if (resultUser != null)
                 {
-                    var id = myContext.Employees.SingleOrDefault(x => x.Email.Equals(email)).Id;
-                    User user = new User()
+                    return Ok(new
                     {
-                        Id = id,
-                        Password = Hashing.HashPassword(password),
-                        RoleId = 1
-                    };
-                    myContext.Users.Add(user);
-                    var resultUser = myContext.SaveChanges();
-                    if (resultUser > 0)
-                        return Ok(new
-                        {
-                            StatusCode = 200,
-                            Message = "Kamu Berhasil Login"
-                        });
+                        StatusCode = 200,
+                        Message = "Kamu Berhasil Daftar"
+                    });
                 }
+                return Ok(new
+                {
+                    StatusCode = 400,
+                    Message = "Kamu Gagal Daftar",
+                    Data = resultUser
+                });
             }
-            return Ok(new
+            catch (Exception ex)
             {
-                StatusCode = 400,
-                Message = "Email atau Password Anda Salah!",
-                Data = data
-            });
+                return BadRequest(new
+                {
+                    StatusCode = 400,
+                    Message = ex.Message,
+                });
+            }
+        }
+
+        [HttpPut]
+        [Route("ChangePassword")]
+        public ActionResult ChangePassword(string email, string passwordLama, string passwordBaru)
+        {
+            try
+            {
+                var result = _repositoryController.ChangePassword(email, passwordLama, passwordBaru);
+                if (result != null)
+                {
+                    return Ok(new
+                    {
+                        StatusCode = 200,
+                        Message = "Kamu Berhasil Daftar"
+                    });
+                }
+                return Ok(new
+                {
+                    StatusCode = 400,
+                    Message = "Kamu Gagal Daftar",
+                    Data = result
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    StatusCode = 400,
+                    Message = ex.Message,
+                });
+            }
+        }
+
+        [HttpPut]
+        [Route("ForgotPassword")]
+        public ActionResult ForgotPassword(string email, string passwordBaru)
+        {
+            try
+            {
+                var result = _repositoryController.ForgotPassword(email, passwordBaru);
+                if (result != null)
+                {
+                    return Ok(new
+                    {
+                        StatusCode = 200,
+                        Message = "Kamu Berhasil Daftar"
+                    });
+                }
+                return Ok(new
+                {
+                    StatusCode = 400,
+                    Message = "Kamu Gagal Daftar",
+                    Data = result
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    StatusCode = 400,
+                    Message = ex.Message,
+                });
+            }
+            
         }
     }
 }

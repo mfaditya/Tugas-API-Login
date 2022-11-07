@@ -2,7 +2,6 @@
 using API.Handlers;
 using API.Models;
 using API.Repository.Interface;
-using API.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;

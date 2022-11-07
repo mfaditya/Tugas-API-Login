@@ -62,3 +62,4 @@ D:\DOC\BOOTCAMP\Week 4\API\API\bin\Debug\net6.0\Humanizer.dll
 D:\DOC\BOOTCAMP\Week 4\API\API\bin\Debug\net6.0\Microsoft.EntityFrameworkCore.Design.dll
 D:\DOC\BOOTCAMP\Week 4\API\API\bin\Debug\net6.0\BCrypt.Net-Core.dll
 D:\DOC\BOOTCAMP\Week 4\API\API\bin\Debug\net6.0\BouncyCastle.Crypto.dll
+D:\DOC\BOOTCAMP\Week 4\API\API\bin\Debug\net6.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll

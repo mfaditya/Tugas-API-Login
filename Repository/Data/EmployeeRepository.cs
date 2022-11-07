@@ -1,7 +1,6 @@
 ﻿using API.Context;
 using API.Models;
 using API.Repository.Interface;
-using API.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
@@ -51,20 +50,5 @@ namespace API.Repository.Data
             var result = _context.SaveChanges();
             return result;
         }
-
-        //public ActionResult Register(RegisterVM registerVM)
-        //{
-        //    var employee = new Employee()
-        //    {
-        //        Id = registerVM.Id,
-        //        FullName = registerVM.FullName,
-        //        Email = registerVM.Email,
-        //        BirthDate = registerVM.BirthDate
-        //    };
-        //    _context.Employees.Add(employee);
-        //    _context.SaveChanges();
-
-        //    return 
-        //}
     }
 }

@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace API.Repository.Data
 {
-    public class UserRepository : IRepository<User, Key>
+    public class UserRepository : IRepository<User>
     {
         private MyContext _context;
         public UserRepository(MyContext context)
@@ -21,7 +21,7 @@ namespace API.Repository.Data
             return result;
         }
 
-        public int Delete(Key id)
+        public int Delete(int id)
         {
             var check = _context.Users.Find(id);
             if (check != null)
@@ -38,7 +38,7 @@ namespace API.Repository.Data
             return _context.Users.ToList();
         }
 
-        public User GetById(Key id)
+        public User GetById(int id)
         {
             return _context.Users.Find(id);
         }

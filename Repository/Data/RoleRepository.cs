@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API.Repository.Data
 {
-    public class RoleRepository : IRepository<Role, int>
+    public class RoleRepository : IRepository<Role>
     {
         private MyContext _context;
         public RoleRepository(MyContext context)

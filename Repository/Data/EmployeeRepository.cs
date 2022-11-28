@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace API.Repository.Data
 {
-    public class EmployeeRepository : IRepository<Employee, int>
+    public class EmployeeRepository : IRepository<Employee>
     {
         private MyContext _context;
         public EmployeeRepository(MyContext context)

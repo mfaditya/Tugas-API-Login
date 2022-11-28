@@ -15,11 +15,11 @@ namespace API.Repository.Data
         {
             _context = context;
         }
-
-        public IEnumerable<Employee> Get()
-        {
-            return _context.Employees.ToList();
-        }
+        //[HttpGet]
+        //public IEnumerable<Employee> Get()
+        //{
+        //    return _context.Employees.ToList();
+        //}
 
         [HttpPost]
         public List<string> Login(string email, string password)
@@ -31,7 +31,7 @@ namespace API.Repository.Data
             var validatePass = Hashing.ValidatePassword(password, result.Password);
             if (result != null && validatePass)
             {
-                List<string> list = new List<string>(4);
+                List<string> list = new List<string>();
                 list.Add(result.Id.ToString());
                 list.Add(result.Employee.Email);
                 list.Add(result.Employee.FullName);

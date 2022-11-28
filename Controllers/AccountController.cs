@@ -5,6 +5,8 @@ using API.Context;
 using API.Handlers;
 using API.Models;
 using API.Repository.Data;
+using API.ViewModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -14,6 +16,7 @@ namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    
     public class AccountController : ControllerBase
     {
         private AccountRepository _repositoryController;
@@ -24,13 +27,14 @@ namespace API.Controllers
             _repositoryController = accountRepository;
         }
 
+        [AllowAnonymous]
         [HttpPost]
         [Route("Login")]
-        public ActionResult Login(string email, string password)
+        public ActionResult Login(LoginVM login)
         {
             try
             {
-                var data = _repositoryController.Login(email, password);
+                var data = _repositoryController.Login(login.Email, login.Password);
                 
                 if (data != null)
                 {
@@ -41,7 +45,7 @@ namespace API.Controllers
                         new Claim("Id", data[0]),
                         new Claim("FullName", data[1]),
                         new Claim("Email", data[2]),
-                        new Claim("Role", data[3])
+                        new Claim(ClaimTypes.Role, data[3])
                     };
 
                     var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
@@ -53,7 +57,14 @@ namespace API.Controllers
                         expires: DateTime.UtcNow.AddMinutes(10),
                         signingCredentials: signIn);
 
-                    return Ok(new JwtSecurityTokenHandler().WriteToken(token));
+                    string tokenCode = new JwtSecurityTokenHandler().WriteToken(token);
+                    return Ok(new
+                    {
+                        StatusCode = 200,
+                        Message = "Login Success",
+                        token = tokenCode
+                    });
+                    //return Ok(new JwtSecurityTokenHandler().WriteToken(token));
                     
                 }
                 else
@@ -75,6 +86,7 @@ namespace API.Controllers
             }
         }
 
+        [AllowAnonymous]
         [HttpPost]
         [Route("Register")]
         public ActionResult Register(string fullName, string email, DateTime birthDate, string password)
@@ -107,6 +119,7 @@ namespace API.Controllers
             }
         }
 
+        [Authorize]
         [HttpPut]
         [Route("ChangePassword")]
         public ActionResult ChangePassword(string email, string passwordLama, string passwordBaru)
@@ -139,6 +152,7 @@ namespace API.Controllers
             }
         }
 
+        [Authorize]
         [HttpPut]
         [Route("ForgotPassword")]
         public ActionResult ForgotPassword(string email, string passwordBaru)
